@@ -7,9 +7,7 @@ def split_list_by(elements: list, split_by: int) -> list:
     return smaller_sets
 
 
-def select_subset_compressed_caches(
-    files_set: list[tuple[int, str]], compressed_file_lens_cached
-):
+def select_subset_compressed_caches(files_set: list[tuple[int, str]], compressed_file_lens_cached):
     return [compressed_file_lens_cached[file_tuple[0]] for file_tuple in files_set]
 
 
@@ -42,9 +40,7 @@ def filtration_round(
         for i in range(len(smaller_sets)):
             files_set = smaller_sets[i]
             files_set = sort_tuple(files_set)
-            subset_compressed_caches = select_subset_compressed_caches(
-                files_set, compressed_file_lens_cached
-            )
+            subset_compressed_caches = select_subset_compressed_caches(files_set, compressed_file_lens_cached)
 
             futures.append(
                 executor.submit(

@@ -26,7 +26,9 @@ def keep_diverse(
     filtered_files_list: FilteredFilesList,
     counter_report: CounterReport,
     stop: Stop,
-    processes_count: int = 10,
+    processes_count: int = 1,
+    start_round: int = 0,
+    initial_counter: Counter | None = None,
 ):
     keep_diverse_logger = get_logger()
 
@@ -40,13 +42,23 @@ def keep_diverse(
 
     keep_diverse_logger.info(f"Saved {len_file_paths} lens to file")
 
-    removes_counter = Counter()
-    for fp in file_paths:
-        removes_counter[fp] = 0
+    if initial_counter is not None:
+        removes_counter = Counter(initial_counter)
+        for fp in file_paths:
+            if fp not in removes_counter:
+                removes_counter[fp] = 0
+    else:
+        removes_counter = Counter()
+        for fp in file_paths:
+            removes_counter[fp] = 0
 
     knees_list: list[int] = []
 
-    finished_rounds = 0
+    rounds_to_run = filter_rounds - start_round
+    finished_rounds = start_round
+
+    keep_diverse_logger.info(f"Starting filtration. Rounds to run: {rounds_to_run} (total: {filter_rounds}, already done: {start_round})")
+
     with safe_process_pool_executor(max_workers=processes_count) as executor:
         futures = [
             executor.submit(
@@ -58,7 +70,7 @@ def keep_diverse(
                 min_indices_count=min_indices_count,
                 compressed_lens_file_path=file_path,
             )
-            for _ in range(filter_rounds)
+            for _ in range(rounds_to_run)
         ]
 
         for future in as_completed(futures):
@@ -75,14 +87,12 @@ def keep_diverse(
             knee_plot.draw(knee, finished_rounds, len_file_paths)
 
             filtered_files_list.save(knee)
-            counter_report.save(removes_counter)
+            counter_report.save(removes_counter, finished_rounds)
 
-            keep_diverse_logger.info(
-                f"Filter. Finished round {finished_rounds} / {filter_rounds}"
-            )
+            keep_diverse_logger.info(f"Filter. Finished round {finished_rounds} / {filter_rounds}")
 
             if stop.should_stop(knees_list):
-                print("Stop")
+                keep_diverse_logger.info("Early stop triggered.")
                 for f in futures:
                     f.cancel()
                 break

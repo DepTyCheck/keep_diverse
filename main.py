@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+from collections import Counter
 
 from keep_diverse.filter_args import add_filter_args
 from keep_diverse.path_args import add_path_arguments
@@ -32,6 +33,39 @@ def main() -> None:
     if args.max_files is not None:
         file_paths = file_paths[: args.max_files]
 
+    filter_rounds = args.filter_rounds if args.filter_rounds is not None else 420
+
+    start_round = 0
+    initial_counter: Counter | None = None
+
+    if args.resume is not None:
+        resume_data = CounterReport.load(args.resume)
+        start_round = resume_data["rounds_completed"]
+        initial_counter = Counter(resume_data["counter"])
+        logging.getLogger().info(
+            f"Resuming from round {start_round} / {filter_rounds} using {args.resume}"
+        )
+        if start_round >= filter_rounds:
+            logging.getLogger().warning(
+                f"Resume report already has {start_round} rounds completed, "
+                f"which meets or exceeds --filter-rounds={filter_rounds}. Nothing to do."
+            )
+            return
+
+    filter_args = {
+        "split_by": args.split_by,
+        "relative_eps": args.relative_eps,
+        "max_tries": args.max_tries_to_find_pct,
+        "min_indices_count": args.min_indices_count,
+        "filter_rounds": filter_rounds,
+        "stop_pct": args.stop_pct,
+        "processes_count": args.processes_count,
+    }
+
+    counter_report_path = args.counter_report
+    if counter_report_path is None and args.resume is not None:
+        counter_report_path = args.resume
+
     knee_plot = (
         NoOutputKneePlot()
         if args.filtration_plot is None
@@ -43,7 +77,7 @@ def main() -> None:
                 relative_eps=args.relative_eps,
                 max_tries=args.max_tries_to_find_pct,
                 min_indices_count=args.min_indices_count,
-                filter_rounds=args.filter_rounds,
+                filter_rounds=filter_rounds,
             ),
         )
     )
@@ -54,9 +88,10 @@ def main() -> None:
 
     counter_report = (
         NoCounterReport()
-        if args.counter_report is None
+        if counter_report_path is None
         else CounterReport(
-            counter_report_path=args.counter_report,
+            counter_report_path=counter_report_path,
+            filter_args=filter_args,
         )
     )
 
@@ -68,8 +103,6 @@ def main() -> None:
         if args.filter_rounds is None
         else DontStop()
     )
-
-    filter_rounds = args.filter_rounds if args.filter_rounds is not None else 420
 
     keep_diverse(
         file_paths=file_paths,
@@ -83,6 +116,8 @@ def main() -> None:
         counter_report=counter_report,
         processes_count=args.processes_count,
         stop=stop,
+        start_round=start_round,
+        initial_counter=initial_counter,
     )
 
 

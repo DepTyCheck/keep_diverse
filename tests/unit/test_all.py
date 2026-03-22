@@ -6,7 +6,7 @@ from .test_filtration_round import TestFiltrationRound
 from .test_subset_filter import TestSubsetFilter
 from .test_pct_filter import TestPCTFilter
 from .test_metric import TestMetric
-from .test_loaded_counter_report import TestLoadedCounterReport
+from .test_counter_report_resume import TestCounterReportSave, TestLoadedCounterReportNewFormat
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()
@@ -19,7 +19,8 @@ if __name__ == "__main__":
         TestSubsetFilter,
         TestPCTFilter,
         TestMetric,
-        TestLoadedCounterReport,
+        TestCounterReportSave,
+        TestLoadedCounterReportNewFormat,
     ]
 
     for test_case in test_cases:

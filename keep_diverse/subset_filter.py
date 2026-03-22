@@ -1,6 +1,4 @@
-def calculate_distance(
-    i: int, j: int, x_cached_len: int, y_cached_len: int, x_text: str, y_text: str
-) -> tuple[tuple[int, int], float]:
+def calculate_distance(i: int, j: int, x_cached_len: int, y_cached_len: int, x_text: str, y_text: str) -> tuple[tuple[int, int], float]:
     from .compress_lzma import compress_lzma
     from .distance import fast_distance
 
@@ -76,8 +74,6 @@ def subset_filter(
 
     local_missing_idxs = [i for i in initial_idxs if i not in pct_filter.current_idxs]
 
-    get_logger().info(
-        f"Subset filter. Removed {len(local_missing_idxs)} files out of {len(subset_file_paths)}"
-    )
+    get_logger().info(f"Subset filter. Removed {len(local_missing_idxs)} files out of {len(subset_file_paths)}")
 
     return [subset_file_paths[i][0] for i in local_missing_idxs]

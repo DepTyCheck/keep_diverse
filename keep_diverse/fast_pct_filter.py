@@ -6,9 +6,7 @@ from .poisson_metric import poisson_metric_value
 from .logger import get_logger
 
 
-def distances_without_idxs(
-    old_distances: dict[tuple[int, int], float], idxs_to_remove: list[int]
-) -> dict[tuple[int, int], float]:
+def distances_without_idxs(old_distances: dict[tuple[int, int], float], idxs_to_remove: list[int]) -> dict[tuple[int, int], float]:
     new_distances = {}
 
     for idx1, idx2 in old_distances.keys():
@@ -49,9 +47,7 @@ class FastPctFilter:
     ) -> tuple[list[int], float] | None:
         indices_to_remove = random.sample(current_idxs, num_to_remove)
 
-        new_distances = distances_without_idxs(
-            self.text_set_distances, indices_to_remove
-        )
+        new_distances = distances_without_idxs(self.text_set_distances, indices_to_remove)
 
         new_value = poisson_metric_value(new_distances)
 
@@ -62,9 +58,7 @@ class FastPctFilter:
         if metric_change <= eps_change:
             self.logger.debug(f"Attempt succeeded. {info}")
             self.last_removed_amount = num_to_remove
-            remaining_indices = [
-                idx for idx in current_idxs if idx not in indices_to_remove
-            ]
+            remaining_indices = [idx for idx in current_idxs if idx not in indices_to_remove]
             return remaining_indices, new_value
         else:
             self.logger.debug(f"Attempt failed. {info}")
@@ -89,9 +83,7 @@ class FastPctFilter:
             return current_idxs, current_value, True
 
         for attempt in range(self.max_tries):
-            result = self.remove_idxs_attempt(
-                current_idxs, removal_pct, current_value, num_to_remove, attempt
-            )
+            result = self.remove_idxs_attempt(current_idxs, removal_pct, current_value, num_to_remove, attempt)
             if result is not None:
                 return result[0], result[1], False
 
@@ -131,17 +123,13 @@ class FastPctFilter:
             if removed_successfully:
                 tmp_new_indicies = new_remaining_indices
                 tmp_new_metric_value = new_value
-                self.logger.debug(
-                    f"Removed {mid}%. New value: {new_value}. New texts count: {len(new_remaining_indices)}."
-                )
+                self.logger.debug(f"Removed {mid}%. New value: {new_value}. New texts count: {len(new_remaining_indices)}.")
                 left = mid + 1
             else:
                 self.logger.debug(f"Did not removed {mid}%.")
                 right = mid - 1
 
-        self.logger.debug(
-            f"Finished. Removed {mid}%. New value: {tmp_new_metric_value}. New texts count: {len(tmp_new_indicies)}."
-        )
+        self.logger.debug(f"Finished. Removed {mid}%. New value: {tmp_new_metric_value}. New texts count: {len(tmp_new_indicies)}.")
         return (tmp_new_indicies, tmp_new_metric_value)
 
     def iterate(self):
@@ -150,9 +138,7 @@ class FastPctFilter:
 
         self.iteration += 1
 
-        new_remaining_indices, new_value = self.search_for_removal_percentage(
-            self.current_idxs, self.current_metric_value
-        )
+        new_remaining_indices, new_value = self.search_for_removal_percentage(self.current_idxs, self.current_metric_value)
         successfully_shrunk = len(new_remaining_indices) < len(self.current_idxs)
 
         self.logger.info(
