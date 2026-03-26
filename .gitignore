@@ -1,3 +1,12 @@
 .venv
 __pycache__
+*.prof
 .DS_Store
+tests/data_copy
+tests/data_copy_single
+tests/data_50
+tests/data_50_4
+tests/data_more
+other/**
+settings*.json
+output

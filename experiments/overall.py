@@ -16,10 +16,11 @@ from keep_diverse.stop import Stop, DontStop
 
 def overall():
     configure_logger(
-        level=logging.INFO,
+        level=logging.DEBUG,
     )
 
-    files = file_paths(50)
+    files = file_paths(100)
+    # print(files)
 
     temp_dir = os.getcwd()  # tempfile.TemporaryDirectory()
     filtration_plot_path = os.path.join(temp_dir, "knee_plot.svg")
@@ -30,7 +31,7 @@ def overall():
     relative_eps = 0.00001
     max_tries = 10
     min_indices_count = 10
-    filter_rounds = None
+    filter_rounds = 100
     stop_pct = 0.03
 
     knee_plot = Plot(

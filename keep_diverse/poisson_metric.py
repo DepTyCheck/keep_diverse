@@ -10,3 +10,11 @@ def poisson_metric_value(distances: dict[tuple[int, int], float]) -> float:
     weights = poisson.pmf(indices, dist_len)
     values = 2 * distance_values * weights
     return values.sum()
+
+
+def diversity_metric(distances: dict) -> float:
+    nearest = {}
+    for (i, j), d in distances.items():
+        nearest[i] = min(nearest.get(i, float("inf")), d)
+        nearest[j] = min(nearest.get(j, float("inf")), d)
+    return sum(nearest.values())

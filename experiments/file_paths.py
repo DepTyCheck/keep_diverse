@@ -3,8 +3,7 @@ from pathlib import Path
 
 
 def file_paths(limit: int = 100):
-    print(Path(__file__).parent)
-    test_dir = Path(__file__).parent.parent / "tests/data_50"
+    test_dir = Path(__file__).parent.parent / "otk-bnf-4"  # "tests/data_50"
 
     file_paths = sorted([str(test_dir / name) for name in os.listdir(test_dir)])[:limit]
 

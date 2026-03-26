@@ -2,7 +2,7 @@ import random
 
 import numpy as np
 
-from .poisson_metric import poisson_metric_value
+from .poisson_metric import poisson_metric_value, diversity_metric
 from .logger import get_logger
 
 
