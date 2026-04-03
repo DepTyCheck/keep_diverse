@@ -57,7 +57,7 @@ def keep_diverse(
     rounds_to_run = filter_rounds - start_round
     finished_rounds = start_round
 
-    keep_diverse_logger.info(f"Starting filtration. Rounds to run: {rounds_to_run} (total: {filter_rounds}, already done: {start_round})")
+    keep_diverse_logger.info(f"Starting filtration. Rounds to run: {rounds_to_run} (total: {filter_rounds}, start at: {start_round})")
 
     with safe_process_pool_executor(max_workers=processes_count) as executor:
         futures = [

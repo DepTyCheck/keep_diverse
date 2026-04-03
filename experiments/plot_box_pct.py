@@ -48,7 +48,7 @@ def plot_box_pct(
     fig, axes = plt.subplots(1, n, figsize=(6 * n, 5), sharey=True)
     if n == 1:
         axes = [axes]
-    fig.suptitle("Kept files (%) by ε — distribution over iterations", fontsize=13)
+    fig.suptitle("Kept files (%) by eps", fontsize=13)
 
     colors = plt.cm.tab10.colors
 
@@ -79,9 +79,7 @@ def plot_box_pct(
             ax.scatter([pos] * len(pcts), pcts, alpha=0.7, zorder=3, s=18, color=color)
 
         ax.set_xticks(positions)
-        ax.set_xticklabels(
-            [f"{e:.0e}" for e in sorted_eps], rotation=45, ha="right", fontsize=8
-        )
+        ax.set_xticklabels([f"{e:.0e}" for e in sorted_eps], rotation=45, ha="right", fontsize=8)
         ax.set_xlabel("relative_eps")
         ax.set_title(label)
         ax.set_ylim(0, 105)
