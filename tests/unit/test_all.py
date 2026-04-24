@@ -8,6 +8,14 @@ from .test_pct_filter import TestPCTFilter
 from .test_metric import TestMetric
 from .test_counter_report_resume import TestCounterReportSave, TestLoadedCounterReportNewFormat
 
+from .test_ncd1 import TestCOfConcat, TestNcd1Formula
+from .test_argmax_cutoff import TestArgmaxCutoff
+from .test_tsdm1 import TestTsdm1Sequence
+from .test_chunk_round import TestRunChunkRound
+from .test_tsdm_filtration_round import TestFiltrationRound as TestTsdmFiltrationRound
+from .test_tsdm_end_to_end import TestTsdmEndToEnd
+
+
 if __name__ == "__main__":
     suite = unittest.TestSuite()
 
@@ -21,6 +29,13 @@ if __name__ == "__main__":
         TestMetric,
         TestCounterReportSave,
         TestLoadedCounterReportNewFormat,
+        TestCOfConcat,
+        TestNcd1Formula,
+        TestArgmaxCutoff,
+        TestTsdm1Sequence,
+        TestRunChunkRound,
+        TestTsdmFiltrationRound,
+        TestTsdmEndToEnd,
     ]
 
     for test_case in test_cases:
