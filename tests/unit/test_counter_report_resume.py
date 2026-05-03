@@ -73,6 +73,47 @@ class TestCounterReportSave(unittest.TestCase):
         # Should not raise
         noop.save(Counter({"/a.sv": 1}), rounds_completed=3)
 
+    def test_save_includes_knees_history_when_provided(self):
+        report = CounterReport(self.path, filter_args={})
+        counter = Counter({"/a.sv": 1})
+
+        report.save(counter, rounds_completed=3, knees_history=[10, 12, 11])
+
+        with open(self.path) as f:
+            data = json.load(f)
+
+        self.assertEqual(data["knees_history"], [10, 12, 11])
+
+    def test_save_omits_knees_history_when_not_provided(self):
+        report = CounterReport(self.path, filter_args={})
+        counter = Counter({"/a.sv": 1})
+
+        report.save(counter, rounds_completed=1)
+
+        with open(self.path) as f:
+            data = json.load(f)
+
+        self.assertNotIn("knees_history", data)
+
+    def test_loaded_report_exposes_knees_history(self):
+        report = CounterReport(self.path, filter_args={})
+        report.save(Counter({"/a.sv": 1}), rounds_completed=2, knees_history=[7, 9])
+
+        loaded = LoadedCounterReport(self.path)
+        self.assertEqual(loaded.knees_history, [7, 9])
+
+    def test_loaded_report_defaults_knees_history_to_empty(self):
+        payload = {
+            "filter_args": {},
+            "rounds_completed": 1,
+            "counter": {"/a.sv": 1},
+        }
+        with open(self.path, "w") as f:
+            json.dump(payload, f)
+
+        loaded = LoadedCounterReport(self.path)
+        self.assertEqual(loaded.knees_history, [])
+
 
 class TestLoadedCounterReportNewFormat(unittest.TestCase):
 

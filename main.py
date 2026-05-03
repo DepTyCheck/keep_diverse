@@ -99,6 +99,7 @@ def main() -> None:
         Stop(
             files_count=len(file_paths),
             pct=args.stop_pct,
+            min_rounds=args.stop_min_rounds,
         )
         if args.filter_rounds is None
         else DontStop()

@@ -2,11 +2,17 @@ from matplotlib.cbook import boxplot_stats
 
 
 class Stop:
-    def __init__(self, files_count: int, pct: float) -> None:
+    def __init__(
+        self,
+        files_count: int,
+        pct: float,
+        min_rounds: int = 20,
+    ) -> None:
         self.eps = files_count * pct
+        self.min_rounds = min_rounds
 
     def should_stop(self, knees_list: list[int]):
-        if len(knees_list) < 20:
+        if len(knees_list) < self.min_rounds:
             return False
 
         stat = boxplot_stats(knees_list)

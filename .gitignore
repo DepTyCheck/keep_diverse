@@ -10,3 +10,7 @@ tests/data_more
 other/**
 settings*.json
 output
+**/otk/*
+tsdm_experiments/**/output/
+keep_diverse.egg-info/
+results/**

@@ -22,6 +22,7 @@ def tsdm_keep_diverse(
     processes_count: int,
     start_round: int,
     initial_counter,
+    min_ratio: float = 0.98,
 ) -> None:
     logger = get_logger()
 
@@ -58,6 +59,7 @@ def tsdm_keep_diverse(
             split_by=split_by,
             singleton_lens_file_path=singleton_lens_path,
             processes_count=processes_count,
+            min_ratio=min_ratio,
         )
         removes_counter.update(removed_paths)
 
@@ -68,7 +70,7 @@ def tsdm_keep_diverse(
 
         knee_plot.draw(knee, ncd1_curves, finished_rounds, filter_rounds)
         filtered_files_list.save(knee)
-        counter_report.save(removes_counter, finished_rounds)
+        counter_report.save(removes_counter, finished_rounds, knees_history=knees_list)
 
         logger.info(
             f"TSDm round {finished_rounds} / {filter_rounds} done. "

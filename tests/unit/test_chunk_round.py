@@ -40,9 +40,9 @@ class TestRunChunkRound(unittest.TestCase):
         self.assertEqual(removed_global_idxs, [])
         self.assertEqual(ncd1_curve, [])
 
-    def test_argmax_at_zero_means_nothing_removed(self):
-        # Fake the case by mocking tsdm1_sequence via subclass-style:
-        # construct a curve with global max at index 0 by controlling content.
+    def test_three_file_chunk_returns_no_removal(self):
+        # With three files the greedy curve has length 1, and cutoff() always
+        # returns 0 for a length-1 curve, so no files are removed.
         # Use three very different, dense random-looking strings.
         chunk_bytes = [
             bytes(range(200)),
@@ -57,11 +57,7 @@ class TestRunChunkRound(unittest.TestCase):
             chunk_bytes=chunk_bytes,
             singleton_lens=singleton_lens,
         )
-        # Correctness: removed is a subset of global_idxs and list length is in [0, 1]
-        # (since TSDm1 produces only one step for 3 files).
-        self.assertLessEqual(len(removed_global_idxs), 1)
-        for idx in removed_global_idxs:
-            self.assertIn(idx, global_idxs)
+        self.assertEqual(removed_global_idxs, [])
 
 
 if __name__ == "__main__":

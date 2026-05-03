@@ -53,11 +53,14 @@ def main() -> None:
             )
             return
 
+    min_ratio = 1.0 - args.cutoff_pct
+
     filter_args = {
         "split_by": args.split_by,
         "filter_rounds": filter_rounds,
         "stop_pct": args.stop_pct,
         "processes_count": args.processes_count,
+        "cutoff_pct": args.cutoff_pct,
     }
 
     counter_report_path = args.counter_report
@@ -67,7 +70,7 @@ def main() -> None:
     knee_plot = (
         NoOutputTsdmPlot()
         if args.filtration_plot is None
-        else TsdmPlot(output_file=args.filtration_plot)
+        else TsdmPlot(output_file=args.filtration_plot, min_ratio=min_ratio)
     )
 
     filtered_files_list = FilteredFilesList(kept_files_path=args.kept_files)
@@ -82,7 +85,11 @@ def main() -> None:
     )
 
     stop = (
-        Stop(files_count=len(file_paths), pct=args.stop_pct)
+        Stop(
+            files_count=len(file_paths),
+            pct=args.stop_pct,
+            min_rounds=args.stop_min_rounds,
+        )
         if args.filter_rounds is None
         else DontStop()
     )
@@ -98,6 +105,7 @@ def main() -> None:
         stop=stop,
         start_round=start_round,
         initial_counter=initial_counter,
+        min_ratio=min_ratio,
     )
 
 

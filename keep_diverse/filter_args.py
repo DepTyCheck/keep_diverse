@@ -34,6 +34,15 @@ def add_filter_args(parser: argparse.ArgumentParser) -> None:
         default=0.03,
     )
     parser.add_argument(
+        "--stop-min-rounds",
+        type=int,
+        required=False,
+        default=20,
+        help=(
+            "Minimum rounds before the stability stop can fire. Default: 20."
+        ),
+    )
+    parser.add_argument(
         "--processes-count",
         type=int,
         default=1,

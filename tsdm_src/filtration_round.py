@@ -25,12 +25,14 @@ def _chunk_worker(
     global_idxs: list[int],
     chunk_paths: list[str],
     singleton_lens_for_chunk: list[int],
+    min_ratio: float,
 ) -> tuple[list[int], list[float]]:
     chunk_bytes = _read_chunk_bytes(chunk_paths)
     return run_chunk_round(
         global_idxs=global_idxs,
         chunk_bytes=chunk_bytes,
         singleton_lens=singleton_lens_for_chunk,
+        min_ratio=min_ratio,
     )
 
 
@@ -39,6 +41,7 @@ def filtration_round(
     split_by: int,
     singleton_lens_file_path: str,
     processes_count: int,
+    min_ratio: float = 0.98,
 ) -> tuple[list[str], list[list[float]]]:
     logger = get_logger()
     singleton_lens_arr = np.load(singleton_lens_file_path)
@@ -64,6 +67,7 @@ def filtration_round(
                     global_idxs,
                     chunk_paths,
                     chunk_singleton_lens,
+                    min_ratio,
                 )
             )
 

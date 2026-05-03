@@ -8,6 +8,7 @@ class LoadedCounterReport:
         self.data: dict = raw["counter"]
         self.filter_args: dict = raw.get("filter_args", {})
         self.rounds_completed: int = raw.get("rounds_completed", 0)
+        self.knees_history: list[int] = raw.get("knees_history", [])
 
     def _load_raw(self) -> dict:
         with open(self.file_path, "r") as f:

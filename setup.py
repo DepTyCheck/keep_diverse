@@ -9,6 +9,6 @@ setup(
     name="keep_diverse",
     version="1.0.0",
     author="L3odr0id",
-    packages=["keep_diverse"],
+    packages=["keep_diverse", "tsdm_src", "experiments"],
     install_requires=requirements,
 )

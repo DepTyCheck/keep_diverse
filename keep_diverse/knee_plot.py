@@ -69,7 +69,12 @@ def sems_plot(ax, sems_history: list[tuple[int, float]]):
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
 
-def fill_between_plot(ax, knees_history: list[tuple[int, int]], files_count: int):
+def fill_between_plot(
+    ax,
+    knees_history: list[tuple[int, int]],
+    files_count: int,
+    include_5pct: bool = True,
+) -> None:
     if len(knees_history) == 0:
         return
 
@@ -128,14 +133,15 @@ def fill_between_plot(ax, knees_history: list[tuple[int, int]], files_count: int
         alpha=0.4,
         label="+/- 3% of files",
     )
-    ax.fill_between(
-        rounds,
-        plus_5_pct,
-        minus_5_pct,
-        color="b",
-        alpha=0.2,
-        label="+/- 5% of files",
-    )
+    if include_5pct:
+        ax.fill_between(
+            rounds,
+            plus_5_pct,
+            minus_5_pct,
+            color="b",
+            alpha=0.2,
+            label="+/- 5% of files",
+        )
 
     ax.set_xlabel("Round")
     ax.set_ylabel("Knee point statistics")

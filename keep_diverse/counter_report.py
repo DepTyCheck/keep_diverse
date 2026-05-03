@@ -7,12 +7,19 @@ class CounterReport:
         self.counter_report_path = counter_report_path
         self.filter_args = filter_args if filter_args is not None else {}
 
-    def save(self, counter: Counter, rounds_completed: int) -> None:
+    def save(
+        self,
+        counter: Counter,
+        rounds_completed: int,
+        knees_history: list[int] | None = None,
+    ) -> None:
         data = {
             "filter_args": self.filter_args,
             "rounds_completed": rounds_completed,
             "counter": dict(counter),
         }
+        if knees_history is not None:
+            data["knees_history"] = list(knees_history)
         with open(self.counter_report_path, "w") as f:
             json.dump(data, f, indent=2)
 
@@ -27,5 +34,10 @@ class NoCounterReport(CounterReport):
     def __init__(self):
         pass
 
-    def save(self, counter: Counter, rounds_completed: int) -> None:
+    def save(
+        self,
+        counter: Counter,
+        rounds_completed: int,
+        knees_history: list[int] | None = None,
+    ) -> None:
         pass

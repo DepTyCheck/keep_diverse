@@ -9,11 +9,12 @@ from .test_metric import TestMetric
 from .test_counter_report_resume import TestCounterReportSave, TestLoadedCounterReportNewFormat
 
 from .test_ncd1 import TestCOfConcat, TestNcd1Formula
-from .test_argmax_cutoff import TestArgmaxCutoff
+from .test_cutoff import TestCutoffPctDrop, TestCutoffArgmax, TestCutoffKneedle
 from .test_tsdm1 import TestTsdm1Sequence
 from .test_chunk_round import TestRunChunkRound
 from .test_tsdm_filtration_round import TestFiltrationRound as TestTsdmFiltrationRound
 from .test_tsdm_end_to_end import TestTsdmEndToEnd
+from .test_tsdm_filtration_runner import TestTsdmFiltrationRunner
 
 
 if __name__ == "__main__":
@@ -31,11 +32,14 @@ if __name__ == "__main__":
         TestLoadedCounterReportNewFormat,
         TestCOfConcat,
         TestNcd1Formula,
-        TestArgmaxCutoff,
+        TestCutoffPctDrop,
+        TestCutoffArgmax,
+        TestCutoffKneedle,
         TestTsdm1Sequence,
         TestRunChunkRound,
         TestTsdmFiltrationRound,
         TestTsdmEndToEnd,
+        TestTsdmFiltrationRunner,
     ]
 
     for test_case in test_cases:
