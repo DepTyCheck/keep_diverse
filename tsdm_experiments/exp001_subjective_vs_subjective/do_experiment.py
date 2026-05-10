@@ -50,7 +50,9 @@ class RecordingTsdmPlot:
     def __init__(self):
         self.rounds: list[list[list[float]]] = []
 
-    def draw(self, knee, ncd1_curves, round_idx, total_rounds):
+    def draw(self, knee, knees_history, round_idx, ncd1_curves=None):
+        if ncd1_curves is None:
+            return
         self.rounds.append([list(c) for c in ncd1_curves])
 
 

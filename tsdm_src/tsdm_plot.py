@@ -4,48 +4,43 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from keep_diverse.knee import Knee
+from keep_diverse.knee_plot import knee_plot, fill_between_plot
 from keep_diverse.save_plot_safely import save_plot_safely
-
-from .cutoff import cutoff_pct_drop
 
 
 class TsdmPlot:
-    def __init__(self, output_file: str, min_ratio: float = 0.98):
+    def __init__(self, output_file: str, total_rounds: int | None):
         self.output_file = output_file
-        self.min_ratio = min_ratio
+        self.total_rounds = total_rounds
 
     def draw(
         self,
         knee: Knee,
-        ncd1_curves: list[list[float]],
+        knees_history: list[int],
         round_idx: int,
-        total_rounds: int,
+        ncd1_curves: list[list[float]] | None = None,
     ) -> None:
-        fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+        files_count = len(knee.y_values)
+        kept = files_count - knee.value
+        if self.total_rounds is None:
+            title = f"Round {round_idx} — kept {kept} / {files_count}"
+        else:
+            title = f"Round {round_idx} / {self.total_rounds} — kept {kept} / {files_count}"
 
-        ax_top = axes[0]
-        if knee.y_values:
-            ax_top.plot(knee.x_values, knee.y_values, marker="o", markersize=2)
-            ax_top.axvline(knee.value, color="red", linestyle="--", label=f"knee @ {knee.value}")
-            ax_top.legend()
-        ax_top.set_title(f"Round {round_idx} / {total_rounds} — removal counter (sorted desc)")
-        ax_top.set_xlabel("file rank")
-        ax_top.set_ylabel("times removed")
+        fig, (ax_top, ax_bot) = plt.subplots(
+            2, 1, figsize=(10, 9), constrained_layout=True
+        )
+        knee_plot(ax_top, knee)
+        ax_top.set_title(title, fontsize=9)
 
-        ax_bot = axes[1]
-        for ci, curve in enumerate(ncd1_curves):
-            if not curve:
-                continue
-            ax_bot.plot(range(len(curve)), curve, alpha=0.4, label=f"chunk {ci}" if ci < 5 else None)
-            cut = cutoff_pct_drop(curve, min_ratio=self.min_ratio)
-            ax_bot.plot([cut], [curve[cut]], marker="o", color="red", markersize=3)
-        ax_bot.set_title("NCD1(Y_k) curves per chunk (red dot = cutoff)")
-        ax_bot.set_xlabel("removal step k")
-        ax_bot.set_ylabel("NCD1")
-        if any(ncd1_curves):
-            ax_bot.legend(loc="best", fontsize=7)
+        history_pairs = list(enumerate(knees_history, start=1))
+        fill_between_plot(
+            ax_bot,
+            history_pairs,
+            files_count=files_count,
+            include_5pct=False,
+        )
 
-        fig.tight_layout()
         save_plot_safely(fig, self.output_file)
         plt.close(fig)
 
@@ -54,8 +49,8 @@ class NoOutputTsdmPlot:
     def draw(
         self,
         knee: Knee,
-        ncd1_curves: list[list[float]],
+        knees_history: list[int],
         round_idx: int,
-        total_rounds: int,
+        ncd1_curves: list[list[float]] | None = None,
     ) -> None:
         pass

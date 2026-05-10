@@ -70,7 +70,10 @@ def main() -> None:
     knee_plot = (
         NoOutputTsdmPlot()
         if args.filtration_plot is None
-        else TsdmPlot(output_file=args.filtration_plot, min_ratio=min_ratio)
+        else TsdmPlot(
+            output_file=args.filtration_plot,
+            total_rounds=args.filter_rounds,
+        )
     )
 
     filtered_files_list = FilteredFilesList(kept_files_path=args.kept_files)

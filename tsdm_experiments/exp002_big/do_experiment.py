@@ -32,19 +32,17 @@ class LiveKneePlot:
 
     def __init__(self, output_path: Path):
         self.output_path = str(output_path)
-        self.knees_history: list[int] = []
 
-    def draw(self, knee, ncd1_curves, round_idx, total_rounds) -> None:
-        self.knees_history.append(knee.value)
+    def draw(self, knee, knees_history, round_idx, ncd1_curves=None) -> None:
         files_count = len(knee.y_values)
         kept = files_count - knee.value
         title = (
-            f"exp002 — round {round_idx}/{total_rounds}  |  "
+            f"exp002 — round {round_idx}/{FILTER_ROUNDS}  |  "
             f"kept {kept}/{files_count}"
         )
         render_knee_figure(
             knee=knee,
-            knees_history=self.knees_history,
+            knees_history=knees_history,
             files_count=files_count,
             output_path=self.output_path,
             title=title,

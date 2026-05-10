@@ -68,7 +68,7 @@ def tsdm_keep_diverse(
         knee = Knee(removes_counter)
         knees_list.append(knee.value)
 
-        knee_plot.draw(knee, ncd1_curves, finished_rounds, filter_rounds)
+        knee_plot.draw(knee, knees_list, finished_rounds, ncd1_curves)
         filtered_files_list.save(knee)
         counter_report.save(removes_counter, finished_rounds, knees_history=knees_list)
 
