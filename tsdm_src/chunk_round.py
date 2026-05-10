@@ -1,5 +1,5 @@
 from .tsdm1 import tsdm1_sequence
-from .cutoff import cutoff_pct_drop as cutoff
+from .cutoff import cutoff_kneedle as cutoff
 
 
 def run_chunk_round(
@@ -15,7 +15,7 @@ def run_chunk_round(
     if not removal_order:
         return [], ncd1_curve
 
-    cut = cutoff(ncd1_curve, min_ratio=min_ratio)
+    cut = cutoff(ncd1_curve)
     local_idxs_to_remove = removal_order[:cut]
     removed_global_idxs = [global_idxs[local_i] for local_i in local_idxs_to_remove]
     return removed_global_idxs, ncd1_curve
