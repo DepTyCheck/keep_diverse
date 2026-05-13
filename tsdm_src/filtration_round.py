@@ -7,6 +7,7 @@ from keep_diverse.process_pool_utils import safe_process_pool_executor
 from keep_diverse.logger import get_logger
 
 from .chunk_round import run_chunk_round
+from .cutoff import cutoff_kneedle
 
 
 def _split_list_by(elements: list, split_by: int) -> list[list]:
@@ -26,6 +27,7 @@ def _chunk_worker(
     chunk_paths: list[str],
     singleton_lens_for_chunk: list[int],
     min_ratio: float,
+    cutoff_fn,
 ) -> tuple[list[int], list[float]]:
     chunk_bytes = _read_chunk_bytes(chunk_paths)
     return run_chunk_round(
@@ -33,6 +35,7 @@ def _chunk_worker(
         chunk_bytes=chunk_bytes,
         singleton_lens=singleton_lens_for_chunk,
         min_ratio=min_ratio,
+        cutoff_fn=cutoff_fn,
     )
 
 
@@ -42,6 +45,7 @@ def filtration_round(
     singleton_lens_file_path: str,
     processes_count: int,
     min_ratio: float = 0.98,
+    cutoff_fn=cutoff_kneedle,
 ) -> tuple[list[str], list[list[float]]]:
     logger = get_logger()
     singleton_lens_arr = np.load(singleton_lens_file_path)
@@ -68,6 +72,7 @@ def filtration_round(
                     chunk_paths,
                     chunk_singleton_lens,
                     min_ratio,
+                    cutoff_fn,
                 )
             )
 

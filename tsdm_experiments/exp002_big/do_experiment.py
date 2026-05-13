@@ -1,7 +1,8 @@
 """Experiment 002 (TSDm) — 150-file filtration with stability stop, knee plot.
 
 Runs one TSDm filtration job over data_150/ (150 files), splitting by 50,
-with stability-based early stop (Stop, pct=0.03) capped at FILTER_ROUNDS.
+with stability-based early stop (Stop, pct=0.03) capped at FILTER_ROUNDS,
+using the max-NCD1 cutoff (cutoff_argmax) instead of the default kneedle.
 Re-renders the standard TsdmPlot after every round.
 """
 
@@ -12,6 +13,7 @@ from pathlib import Path
 
 from keep_diverse.logger import configure_logger
 from keep_diverse.stop import Stop
+from tsdm_src.cutoff import cutoff_argmax
 from tsdm_src.tsdm_filtration_runner import run_tsdm_filtration
 from tsdm_src.tsdm_plot import TsdmPlot
 
@@ -47,6 +49,7 @@ if __name__ == "__main__":
         processes_count=PROCESSES_COUNT,
         stop=stop,
         knee_plot=knee_plot,
+        cutoff_fn=cutoff_argmax,
     )
     elapsed = time.perf_counter() - start
 

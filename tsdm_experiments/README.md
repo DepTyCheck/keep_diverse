@@ -13,6 +13,7 @@ Each experiment is a stand-alone script:
 python tsdm_experiments/exp000_timing_50/do_experiment.py
 python tsdm_experiments/exp001_subjective_vs_subjective/do_experiment.py
 python -m tsdm_experiments.exp002_big.do_experiment
+python -m tsdm_experiments.exp003_very_big.do_experiment
 python tsdm_experiments/exp006_tsdm_kept_counts/do_experiment.py
 ```
 

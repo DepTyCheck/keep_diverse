@@ -9,6 +9,7 @@ from keep_diverse.knee import Knee
 from keep_diverse.logger import get_logger
 
 from .filtration_round import filtration_round
+from .cutoff import cutoff_kneedle
 
 
 def tsdm_keep_diverse(
@@ -23,6 +24,7 @@ def tsdm_keep_diverse(
     start_round: int,
     initial_counter,
     min_ratio: float = 0.98,
+    cutoff_fn=cutoff_kneedle,
 ) -> None:
     logger = get_logger()
 
@@ -60,6 +62,7 @@ def tsdm_keep_diverse(
             singleton_lens_file_path=singleton_lens_path,
             processes_count=processes_count,
             min_ratio=min_ratio,
+            cutoff_fn=cutoff_fn,
         )
         removes_counter.update(removed_paths)
 
@@ -81,3 +84,7 @@ def tsdm_keep_diverse(
         if stop.should_stop(knees_list):
             logger.info("Early stop triggered.")
             break
+
+    final_knee = Knee(removes_counter)
+    kept_count = len(final_knee.good_files())
+    logger.info(f"Kept {kept_count}/{len(file_paths)} files")

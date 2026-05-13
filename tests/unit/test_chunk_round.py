@@ -60,5 +60,46 @@ class TestRunChunkRound(unittest.TestCase):
         self.assertEqual(removed_global_idxs, [])
 
 
+    def test_cutoff_fn_overrides_removal_count(self):
+        # 4-file chunk -> tsdm1 greedy curve has length 2 (n - 2).
+        chunk_bytes = [b"alpha-content", b"beta-content", b"gamma-content", b"delta-content"]
+        singleton_lens = [_len_lzma(b) for b in chunk_bytes]
+        global_idxs = [10, 20, 30, 40]
+
+        seen_curves = []
+
+        def fake_cutoff(curve):
+            seen_curves.append(list(curve))
+            return len(curve)  # remove the entire greedy prefix
+
+        removed, ncd1_curve = run_chunk_round(
+            global_idxs=global_idxs,
+            chunk_bytes=chunk_bytes,
+            singleton_lens=singleton_lens,
+            cutoff_fn=fake_cutoff,
+        )
+
+        self.assertEqual(seen_curves, [ncd1_curve])
+        self.assertEqual(len(removed), len(ncd1_curve))
+        for idx in removed:
+            self.assertIn(idx, global_idxs)
+
+    def test_default_cutoff_is_kneedle(self):
+        # 4-file chunk -> curve length 2 -> cutoff_kneedle short-circuits to 0,
+        # so the default behaviour removes nothing.
+        chunk_bytes = [b"alpha-content", b"beta-content", b"gamma-content", b"delta-content"]
+        singleton_lens = [_len_lzma(b) for b in chunk_bytes]
+        global_idxs = [10, 20, 30, 40]
+
+        removed, ncd1_curve = run_chunk_round(
+            global_idxs=global_idxs,
+            chunk_bytes=chunk_bytes,
+            singleton_lens=singleton_lens,
+        )
+
+        self.assertEqual(len(ncd1_curve), 2)
+        self.assertEqual(removed, [])
+
+
 if __name__ == "__main__":
     unittest.main()

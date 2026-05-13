@@ -10,6 +10,7 @@ from keep_diverse.filtered_files_list import FilteredFilesList
 from keep_diverse.stop import DontStop
 
 from .tsdm_keep_diverse import tsdm_keep_diverse
+from .cutoff import cutoff_kneedle
 from .tsdm_plot import NoOutputTsdmPlot
 
 
@@ -30,6 +31,7 @@ def run_tsdm_filtration(
     processes_count: int = 1,
     knee_plot=None,
     stop=None,
+    cutoff_fn=cutoff_kneedle,
 ) -> Path:
     """Run TSDm on every file in `directory`. Write `{tag}.json` (counter
     report) and `{tag}_kept.txt` (files above the knee) under `output_dir`.
@@ -55,6 +57,7 @@ def run_tsdm_filtration(
             filter_args=filter_args,
         ),
         stop=stop if stop is not None else DontStop(),
+        cutoff_fn=cutoff_fn,
         processes_count=processes_count,
         start_round=0,
         initial_counter=None,
